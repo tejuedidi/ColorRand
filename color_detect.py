@@ -11,12 +11,10 @@ def getColors(img):
     return colorthief.get_palette(color_count = 7) # extracts 7 colors from the image
 
 def bitSeq(dom_colors):
-    combinedByte = " "
-    # print(dom_colors)
+    combinedByte = str()
+   
     for i in dom_colors:
-        # print(i) this works
         for j in i:
-            # print(j) also works
             combinedByte += str(j)
     
     return combinedByte
@@ -43,8 +41,6 @@ while(True):
    
     # extract dominant colors from the current frame
     dom_colors = getColors(frame)
-    color_data.append(bitSeq(dom_colors))
-    # print(bitSeq(dom_colors))
 
     box_height = 30 # height of each color box
     box_width = 30 # width of each color box
@@ -67,15 +63,13 @@ while(True):
         
     cv2.imshow('Real-Time Color Detector!', frame)
 
-    # 
-
     # writing color data to json file
     # print(color_data)
     current_time = time.time()
     if (current_time - start_time >= 15):
-    
+        color_data.append(bitSeq(dom_colors))
         print("inside write",color_data)
-        with open("color_data.json", "a+") as outfile:
+        with open("color_data6.json", "a+") as outfile:
             json.dump(color_data, outfile)
 
         # Reset the timer
