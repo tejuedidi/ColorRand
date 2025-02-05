@@ -9,12 +9,26 @@ def getColors(img):
     colorthief = ColorThief('img.jpg') 
     return colorthief.get_palette(color_count = 7) # extracts 7 colors from the image
 
+def bitSeq(dom_colors):
+    combinedByte = " "
+    # print(dom_colors)
+    for i in dom_colors:
+        # print(i) this works
+        for j in i:
+            # print(j) also works
+            combinedByte += str(j)
+    
+    return combinedByte
+
 #creating a video capture object 
 webcam = cv2.VideoCapture(0) # initializing default webcam
 
 if not webcam.isOpened():
     print("--Cannot open camera.--")
     exit()
+
+# list of strings to continuining append to 
+color_data = list() # list for byte data
 
 while(True):
     # returns a boolean if frame read currectly then try
@@ -23,11 +37,11 @@ while(True):
     if not success: # if frame not successfully captured then break
         print("--Frame reading error, try again.--")
         break
-
-    color_data = [] # list for byte data
+   
     # extract dominant colors from the current frame
     dom_colors = getColors(frame)
-
+    print(bitSeq(dom_colors))
+    color_data.append(bitSeq(dom_colors))
 
     box_height = 30 # height of each color box
     box_width = 30 # width of each color box
@@ -50,11 +64,12 @@ while(True):
         
     cv2.imshow('Real-Time Color Detector!', frame)
 
-    color_data = json.dumps(dom_colors) # serializing to json
+    # 
 
     # writing color data to json file
-    with open("color_data.json", "w") as outfile:
-        outfile.write(color_data)
+    # print(color_data)
+    with open("color_data1.json", "w") as outfile:
+        json.dump(color_data, outfile)
     
     # waits 1 millisecond to break the loop when q key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
