@@ -1,5 +1,6 @@
 import cv2 
 import json
+import time
 from colorthief import ColorThief
 
 # fn to get the color palette of an image
@@ -30,6 +31,8 @@ if not webcam.isOpened():
 # list of strings to continuining append to 
 color_data = list() # list for byte data
 
+start_time = time.time() # to record before the start of the loop
+
 while(True):
     # returns a boolean if frame read currectly then try
     success, frame = webcam.read() # captures frame from webcam
@@ -40,8 +43,8 @@ while(True):
    
     # extract dominant colors from the current frame
     dom_colors = getColors(frame)
-    print(bitSeq(dom_colors))
     color_data.append(bitSeq(dom_colors))
+    # print(bitSeq(dom_colors))
 
     box_height = 30 # height of each color box
     box_width = 30 # width of each color box
@@ -68,8 +71,17 @@ while(True):
 
     # writing color data to json file
     # print(color_data)
-    with open("color_data1.json", "w") as outfile:
-        json.dump(color_data, outfile)
+    current_time = time.time()
+    if (current_time - start_time >= 15):
+    
+        print("inside write",color_data)
+        with open("color_data.json", "a+") as outfile:
+            json.dump(color_data, outfile)
+
+        # Reset the timer
+        start_time = current_time
+        color_data.clear()
+
     
     # waits 1 millisecond to break the loop when q key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
